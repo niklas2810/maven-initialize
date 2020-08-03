@@ -1,0 +1,28 @@
+version: "2"
+plugins:
+  checkstyle:
+    enabled: true
+    checks:
+      # Allow one-line if statements
+      com.puppycrawl.tools.checkstyle.checks.blocks.NeedBracesCheck:
+        enabled: false
+      # Allow the + sign at the end of a line
+      com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck:
+        enabled: false
+      # Disable import sorting
+      com.puppycrawl.tools.checkstyle.checks.imports.CustomImportOrderCheck:
+        enabled: false
+      # Allow to leave out Javadoc summaries
+      com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
+        enabled: false
+      # <p> tag placement is not relevant in JavaDocs as long as it's rendered properly
+      com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocParagraphCheck:
+        enabled: false
+  pmd:
+    enabled: true
+  sonar-java:
+    enabled: true
+    checks:
+      # This check did not work properly, which is why it's on my blocklist
+      squid:UnusedPrivateMethod:
+        enabled: false

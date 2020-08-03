@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.niklasarndt</groupId>
+    <artifactId>maven-initializer</artifactId>
+    <version>1.0</version>
+    <description>A script-like program written in Java used to configure a cloned project from niklas2810/maven-template.</description>
+    <url>https://github.com/niklas2810/maven-initialize</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.mainClass>com.niklasarndt.maveninit.Bootstrap</project.mainClass>
+        <source.version>14</source.version>
+        <target.version>14</target.version>
+
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>dd-MM-yyyy HH:mm z</maven.build.timestamp.format>
+    </properties>
+
+    <dependencies>
+
+        <!-- https://junit.org/junit5/docs/current/user-guide/ -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+
+            <!-- COMPILING -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${source.version}</source>
+                    <target>${target.version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- PACKAGING -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${project.mainClass}</mainClass>
+                        </manifest>
+                    </archive>
+                    <finalName>initializer</finalName>
+                </configuration>
+            </plugin>
+
+            <!-- TESTING -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+
+            <!-- COVERAGE -->
+            <!-- https://www.jacoco.org/jacoco/trunk/doc/maven.html -->
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.5</version>
+                <configuration>
+                    <excludes>
+                        <exclude>path/to/excluded/class/or/package/*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>inject-jacoco</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>create-report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <title>Maven Initializer</title>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>perform-checks</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <!-- 60% of the project code should be tested.
+                                        Adjust or delete this limit if you want to. -->
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.60</minimum>
+                                        </limit>
+
+                                        <!-- Every class should be tested
+                                        This test might be a bit restricted, consider deleting
+                                        if you don't think it's useful.
+                                        If only some classes can not be tested, you can exclude
+                                        them in the plugin configuration up above. -->
+                                        <limit>
+                                            <counter>CLASS</counter>
+                                            <value>MISSEDCOUNT</value>
+                                            <maximum>0</maximum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
