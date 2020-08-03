@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+        <meta name="generator" content=
+        "HTML Tidy for HTML5 for Linux version 5.6.0" />
+        <meta http-equiv="Content-Type" content=
+        "text/html; charset=utf-8" />
+        <link rel="stylesheet" href=
+        "../jacoco-resources/report.css" type="text/css" />
+        <link rel="shortcut icon" href=
+        "../jacoco-resources/report.gif" type="image/gif" />
+        <title>
+            ExecutionStep.java
+        </title>
+        <link rel="stylesheet" href=
+        "../jacoco-resources/prettify.css" type="text/css" />
+        <script type="text/javascript" src=
+        "../jacoco-resources/prettify.js"></script>
+    </head>
+    <body onload="window['PR_TAB_WIDTH']=4;prettyPrint()">
+        <div class="breadcrumb" id="breadcrumb">
+            <span class="info"><a href="../jacoco-sessions.html"
+            class="el_session">Sessions</a></span><a href=
+            "../index.html" class="el_report">Maven Initializer</a>
+            &gt; <a href="index.source.html" class=
+            "el_package">com.niklasarndt.maveninit.step</a> &gt;
+            <span class="el_source">ExecutionStep.java</span>
+        </div>
+        <h1>
+            ExecutionStep.java
+        </h1>
+        <pre class="source lang-java linenums">
+        package com.niklasarndt.maveninit.step;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Niklas on 2020/08/03.
+ */
+public abstract class ExecutionStep {
+
+<span class="fc" id=
+"L12">    private final List&lt;ExecutionStep&gt; children = new ArrayList&lt;&gt;();</span>
+    private String name;
+    private int index;
+    private ExecutionStep parent;
+
+    public ExecutionStep(String name, ExecutionStep... children) {
+<span class="fc" id=
+"L18">        this(name, List.of(children));</span>
+<span class="fc" id="L19">    }</span>
+
+<span class="fc" id=
+"L21">    public ExecutionStep(String name, List&lt;ExecutionStep&gt; children) {</span>
+<span class="fc" id="L22">        this.name = name;</span>
+
+<span class="pc bpc" id="L24" title=
+"1 of 4 branches missed.">        if (children == null || children.isEmpty()) return;</span>
+<span class="fc" id=
+"L25">        children.forEach(this::addChild);</span>
+<span class="fc" id="L26">    }</span>
+
+    public final void addChild(ExecutionStep child) {
+<span class="fc bfc" id="L29" title=
+"All 2 branches covered.">        if(hasChild(child)) {</span>
+<span class="fc" id=
+"L30">            throw new IllegalArgumentException("This child has already been registered.");</span>
+        }
+<span class="fc" id="L32">        children.add(child);</span>
+<span class="fc" id=
+"L33">        child.setParent(this, children.size());</span>
+<span class="fc" id="L34">    }</span>
+
+    public final boolean hasChild(ExecutionStep step) {
+<span class="fc" id=
+"L37">        return children.stream().anyMatch(child -&gt; child.getClass().equals(step.getClass()));</span>
+    }
+
+    public final void setParent(ExecutionStep parent, int index) {
+<span class="pc bpc" id="L41" title=
+"1 of 2 branches missed.">        if (this.parent != null) {</span>
+<span class="nc" id=
+"L42">            throw new IllegalStateException("The parent step has already been set.");</span>
+        }
+<span class="fc bfc" id="L44" title=
+"All 2 branches covered.">        if (parent == null) {</span>
+<span class="fc" id=
+"L45">            throw new IllegalArgumentException("The parent parameter must not be null");</span>
+        }
+<span class="fc bfc" id="L47" title=
+"All 2 branches covered.">        if(!parent.hasChild(this)) {</span>
+<span class="fc" id=
+"L48">            throw new IllegalStateException("Please register a child using the parent's method.");</span>
+        }
+<span class="fc" id="L50">        setIndex(index);</span>
+
+<span class="fc" id="L52">        this.parent = parent;</span>
+<span class="fc" id="L53">    }</span>
+
+    public abstract boolean isExecutable(File runningDirectory);
+
+    public abstract boolean execute(File runningDirectory);
+
+    public String getName() {
+<span class="fc" id="L60">        return name;</span>
+    }
+
+    public List&lt;ExecutionStep&gt; getChildren() {
+<span class="fc" id="L64">        return children;</span>
+    }
+
+    public int getIndex() {
+<span class="fc" id="L68">        return index;</span>
+    }
+
+    public final void setIndex(int index) {
+<span class="fc bfc" id="L72" title=
+"All 2 branches covered.">        if (this.index &gt; 0) {</span>
+<span class="fc" id=
+"L73">            throw new IllegalStateException("The index has already been set.");</span>
+        }
+<span class="fc bfc" id="L75" title=
+"All 2 branches covered.">        if (index &lt; 1) {</span>
+<span class="fc" id=
+"L76">            throw new IllegalArgumentException(index +</span>
+                    " is an invalid value for an execution step.");
+        }
+<span class="fc" id="L79">        this.index = index;</span>
+<span class="fc" id="L80">    }</span>
+
+    public String getPrintableIndex() {
+<span class="pc bpc" id="L83" title=
+"1 of 2 branches missed.">        return getParent() == null ? getIndex() + "." : getParent().getIndex()</span>
+<span class="fc" id=
+"L84">                + "." + getIndex() + ".";</span>
+    }
+
+    public ExecutionStep getParent() {
+<span class="fc" id="L88">        return parent;</span>
+    }
+}
+</pre>
+        <div class="footer">
+            <span class="right">Created with <a href=
+            "http://www.jacoco.org/jacoco">JaCoCo</a>
+            0.8.5.201910111838</span>
+        </div>
+    </body>
+</html>
