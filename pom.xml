@@ -7,7 +7,9 @@
     <groupId>com.niklasarndt</groupId>
     <artifactId>maven-initializer</artifactId>
     <version>1.0</version>
-    <description>A script-like program written in Java used to configure a cloned project from niklas2810/maven-template.</description>
+    <description>A script-like program written in Java used to configure a cloned project from\n\
+        niklas2810/maven-template.
+    </description>
     <url>https://github.com/niklas2810/maven-initialize</url>
 
     <properties>
@@ -109,6 +111,10 @@
                         <phase>test</phase>
                         <configuration>
                             <title>Maven Initializer</title>
+                            <excludes>
+                                <exclude>**/Input.class</exclude>
+                                <exclude>**/step/impl/**</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                     <execution>
@@ -143,6 +149,10 @@
                                     </limits>
                                 </rule>
                             </rules>
+                            <excludes>
+                                <exclude>**/Input.class</exclude>
+                                <exclude>**/step/impl/**</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>
