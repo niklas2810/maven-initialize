@@ -2,10 +2,10 @@
     <h1>Maven Initializer</h1>
     <br>
     <a href="https://codeclimate.com/github/niklas2810/maven-initialize/maintainability">
-        <img alt="codeclimate maintainability" src="https://api.codeclimate.com/v1/badges/32b02cdb535c901f3280/maintainability" />
+        <img alt="codeclimate maintainability" src="https://api.codeclimate.com/v1/badges/241c36fa7311da24b432/maintainability" />
     </a>
     <a href="https://codeclimate.com/github/niklas2810/maven-initialize/test_coverage">
-        <img alt="codeclimate test coverage" src="https://api.codeclimate.com/v1/badges/32b02cdb535c901f3280/test_coverage" />
+        <img alt="codeclimate test coverage" src="https://api.codeclimate.com/v1/badges/241c36fa7311da24b432/test_coverage" />
     </a>
     <br>
     <a href="https://github.com/niklas2810/maven-initialize/actions?query=workflow%3A%22Unit+Tests%22">
