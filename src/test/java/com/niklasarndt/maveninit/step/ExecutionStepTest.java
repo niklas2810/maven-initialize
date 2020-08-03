@@ -1,6 +1,7 @@
 package com.niklasarndt.maveninit.step;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 
@@ -48,7 +49,7 @@ class ExecutionStepTest {
         assertEquals(parent, child.getParent());
 
         assertEquals(1, parent.getChildren().size());
-        assertEquals("1.1.", parent.getChildren().get(0).getPrintableIndex());
+        assertEquals("1.1. child", parent.getChildren().get(0).getPrintable());
 
         ExecutionStep secondChild = new ExecutionStep("child2") {
             @Override
