@@ -34,14 +34,30 @@
         <pre class="source lang-java linenums">
         package com.niklasarndt.maveninit;
 
+import java.io.File;
+
 /**
  * Created by Niklas on 2020/08/03.
  */
-<span class="nc" id="L6">public class Configuration {</span>
+<span class="nc" id="L8">public class Configuration {</span>
+
+<span class="fc" id=
+"L10">    public static boolean USE_GIT = true;</span>
+    private static File DIR;
 
     public static boolean isDebug() {
 <span class="fc" id=
-"L9">        return false; //TODO: Implement local debug mode</span>
+"L14">        return false; //TODO: Implement local debug mode</span>
+    }
+
+    public static void DIR(File directory) {
+<span class="pc bpc" id="L18" title=
+"1 of 2 branches missed.">        if (DIR != null) return;</span>
+<span class="fc" id="L19">        DIR = directory;</span>
+<span class="fc" id="L20">    }</span>
+
+    public static File DIR() {
+<span class="fc" id="L23">        return DIR;</span>
     }
 }
 </pre>

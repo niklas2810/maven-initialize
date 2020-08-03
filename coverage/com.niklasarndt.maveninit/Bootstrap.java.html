@@ -35,6 +35,9 @@
         package com.niklasarndt.maveninit;
 
 
+import com.niklasarndt.maveninit.step.ExecutionStepManager;
+import com.niklasarndt.maveninit.step.impl.GitStep;
+import com.niklasarndt.maveninit.util.Input;
 import com.niklasarndt.maveninit.util.Log;
 import java.io.File;
 
@@ -43,31 +46,80 @@ public class Bootstrap {
     private final File directory;
 
 <span class="fc" id=
-"L11">    public Bootstrap(File directory) {</span>
+"L14">    public Bootstrap(File directory) {</span>
 <span class="fc" id=
-"L12">        this.directory = directory;</span>
+"L15">        this.directory = directory;</span>
+<span class="fc" id=
+"L16">        Configuration.DIR(this.directory);</span>
 
-<span class="pc bpc" id="L14" title=
-"3 of 4 branches missed.">        if (!directory.exists() || !directory.isDirectory()) {</span>
+<span class="pc bpc" id="L18" title=
+"3 of 4 branches missed.">        if (!this.directory.exists() || !this.directory.isDirectory()) {</span>
 <span class="fc" id=
-"L15">            Log.error("The running directory \"%s\" is invalid. " +</span>
+"L19">            Log.error("The running directory \"%s\" is invalid. " +</span>
 <span class="fc" id=
-"L16">                    "It either does not exist or isn't a directory.", directory.getAbsolutePath());</span>
-<span class="nc" id="L17">            System.exit(1);</span>
+"L20">                    "It either does not exist or isn't a directory.", directory.getAbsolutePath());</span>
+<span class="fc" id=
+"L21">            System.out.println(this.directory.exists());</span>
+<span class="fc" id=
+"L22">            System.out.println(this.directory.isDirectory());</span>
+<span class="nc" id="L23">            System.exit(1);</span>
         }
 
 <span class="nc" id=
-"L20">        Log.info("Running directory: %s", directory.getAbsolutePath());</span>
-<span class="nc" id="L21">    }</span>
+"L26">        Log.info("Running directory: %s", directory.getAbsolutePath());</span>
+<span class="nc" id="L27">        performInit();</span>
+<span class="nc" id="L28">    }</span>
 
     public static void main(String[] args) {
 <span class="fc" id=
-"L24">        Log.info("Please submit any issues " +</span>
-                "on GitHub: https://github.com/niklas2810/maven-initialize.");
+"L31">        Log.info("\n\nPlease submit any issues " +</span>
+                "on GitHub: %s.", BuildInfo.URL);
+
+<span class="fc bfc" id="L34" title=
+"All 2 branches covered.">        if (args.length == 0) {</span>
+<span class="fc" id=
+"L35">            Log.error("Please specify the directory which " +</span>
+                    "should be used in the parameters.");
+<span class="nc" id="L37">            System.exit(1);</span>
+        }
 
 <span class="nc" id=
-"L27">        new Bootstrap(new File(String.join(" ", args)));</span>
-<span class="nc" id="L28">    }</span>
+"L40">        new Bootstrap(new File(String.join(" ", args)));</span>
+<span class="nc" id="L41">    }</span>
+
+    private void performInit() {
+<span class="nc" id=
+"L44">        System.out.println("\n----------- SETUP ---------------\n");</span>
+<span class="nc" id=
+"L45">        Configuration.USE_GIT = Input.yesNo("Do you want to setup GitHub in your repository?",</span>
+                true);
+
+<span class="nc" id="L48">        executeSteps();</span>
+<span class="nc" id="L49">        shutdown();</span>
+<span class="nc" id="L50">    }</span>
+
+    private void executeSteps() {
+<span class="nc" id=
+"L53">        System.out.println("\n\n----------- REVIEW ---------------\n");</span>
+
+<span class="nc" id=
+"L55">        ExecutionStepManager manager = new ExecutionStepManager(new GitStep());</span>
+
+<span class="nc" id=
+"L57">        System.out.println("All steps which will be executed are marked with an \"X\".\n");</span>
+<span class="nc" id="L58">        manager.printSteps();</span>
+<span class="nc bnc" id="L59" title=
+"All 2 branches missed.">        if (!Input.yesNo("\nExecute now?", false)) {</span>
+<span class="nc" id="L60">            Log.info("Goodbye!");</span>
+<span class="nc" id="L61">            return;</span>
+        }
+
+<span class="nc" id="L64">        manager.execute();</span>
+<span class="nc" id="L65">    }</span>
+
+    private void shutdown() {
+<span class="nc" id="L68">        Input.shutdown();</span>
+<span class="nc" id="L69">    }</span>
 
 }
 </pre>

@@ -34,6 +34,7 @@
         <pre class="source lang-java linenums">
         package com.niklasarndt.maveninit.step;
 
+import com.niklasarndt.maveninit.Configuration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,103 +45,126 @@ import java.util.List;
 public abstract class ExecutionStep {
 
 <span class="fc" id=
-"L12">    private final List&lt;ExecutionStep&gt; children = new ArrayList&lt;&gt;();</span>
+"L13">    private final List&lt;ExecutionStep&gt; children = new ArrayList&lt;&gt;();</span>
     private String name;
     private int index;
     private ExecutionStep parent;
 
     public ExecutionStep(String name, ExecutionStep... children) {
 <span class="fc" id=
-"L18">        this(name, List.of(children));</span>
-<span class="fc" id="L19">    }</span>
+"L19">        this(name, List.of(children));</span>
+<span class="fc" id="L20">    }</span>
 
 <span class="fc" id=
-"L21">    public ExecutionStep(String name, List&lt;ExecutionStep&gt; children) {</span>
-<span class="fc" id="L22">        this.name = name;</span>
+"L22">    public ExecutionStep(String name, List&lt;ExecutionStep&gt; children) {</span>
+<span class="fc" id="L23">        this.name = name;</span>
 
-<span class="pc bpc" id="L24" title=
+<span class="pc bpc" id="L25" title=
 "1 of 4 branches missed.">        if (children == null || children.isEmpty()) return;</span>
 <span class="fc" id=
-"L25">        children.forEach(this::addChild);</span>
-<span class="fc" id="L26">    }</span>
+"L26">        children.forEach(this::addChild);</span>
+<span class="fc" id="L27">    }</span>
 
     public final void addChild(ExecutionStep child) {
-<span class="fc bfc" id="L29" title=
-"All 2 branches covered.">        if(hasChild(child)) {</span>
+<span class="fc bfc" id="L30" title=
+"All 2 branches covered.">        if (hasChild(child)) {</span>
 <span class="fc" id=
-"L30">            throw new IllegalArgumentException("This child has already been registered.");</span>
+"L31">            throw new IllegalArgumentException("This child has already been registered.");</span>
         }
-<span class="fc" id="L32">        children.add(child);</span>
+<span class="fc" id="L33">        children.add(child);</span>
 <span class="fc" id=
-"L33">        child.setParent(this, children.size());</span>
-<span class="fc" id="L34">    }</span>
+"L34">        child.setParent(this, children.size());</span>
+<span class="fc" id="L35">    }</span>
 
     public final boolean hasChild(ExecutionStep step) {
 <span class="fc" id=
-"L37">        return children.stream().anyMatch(child -&gt; child.getClass().equals(step.getClass()));</span>
+"L38">        return children.stream().anyMatch(child -&gt; child.getClass().equals(step.getClass()));</span>
     }
 
     public final void setParent(ExecutionStep parent, int index) {
-<span class="pc bpc" id="L41" title=
+<span class="pc bpc" id="L42" title=
 "1 of 2 branches missed.">        if (this.parent != null) {</span>
 <span class="nc" id=
-"L42">            throw new IllegalStateException("The parent step has already been set.");</span>
+"L43">            throw new IllegalStateException("The parent step has already been set.");</span>
         }
-<span class="fc bfc" id="L44" title=
+<span class="fc bfc" id="L45" title=
 "All 2 branches covered.">        if (parent == null) {</span>
 <span class="fc" id=
-"L45">            throw new IllegalArgumentException("The parent parameter must not be null");</span>
+"L46">            throw new IllegalArgumentException("The parent parameter must not be null");</span>
         }
-<span class="fc bfc" id="L47" title=
-"All 2 branches covered.">        if(!parent.hasChild(this)) {</span>
+<span class="fc bfc" id="L48" title=
+"All 2 branches covered.">        if (!parent.hasChild(this)) {</span>
 <span class="fc" id=
-"L48">            throw new IllegalStateException("Please register a child using the parent's method.");</span>
+"L49">            throw new IllegalStateException("Please register a child using the parent's method.");</span>
         }
-<span class="fc" id="L50">        setIndex(index);</span>
+<span class="fc" id="L51">        setIndex(index);</span>
 
-<span class="fc" id="L52">        this.parent = parent;</span>
-<span class="fc" id="L53">    }</span>
+<span class="fc" id="L53">        this.parent = parent;</span>
+<span class="fc" id="L54">    }</span>
 
     public abstract boolean isExecutable(File runningDirectory);
 
     public abstract boolean execute(File runningDirectory);
 
+    public final boolean executeWithChildren(File runningDirectory) {
+<span class="fc" id=
+"L61">        boolean result = execute(runningDirectory);</span>
+<span class="pc" id=
+"L62">        children.forEach(child -&gt; child.execute(runningDirectory));</span>
+<span class="fc" id="L63">        return result;</span>
+    }
+
     public String getName() {
-<span class="fc" id="L60">        return name;</span>
+<span class="fc" id="L67">        return name;</span>
     }
 
     public List&lt;ExecutionStep&gt; getChildren() {
-<span class="fc" id="L64">        return children;</span>
+<span class="fc" id="L71">        return children;</span>
     }
 
     public int getIndex() {
-<span class="fc" id="L68">        return index;</span>
+<span class="fc" id="L75">        return index;</span>
     }
 
     public final void setIndex(int index) {
-<span class="fc bfc" id="L72" title=
+<span class="fc bfc" id="L79" title=
 "All 2 branches covered.">        if (this.index &gt; 0) {</span>
 <span class="fc" id=
-"L73">            throw new IllegalStateException("The index has already been set.");</span>
+"L80">            throw new IllegalStateException("The index has already been set.");</span>
         }
-<span class="fc bfc" id="L75" title=
+<span class="fc bfc" id="L82" title=
 "All 2 branches covered.">        if (index &lt; 1) {</span>
 <span class="fc" id=
-"L76">            throw new IllegalArgumentException(index +</span>
+"L83">            throw new IllegalArgumentException(index +</span>
                     " is an invalid value for an execution step.");
         }
-<span class="fc" id="L79">        this.index = index;</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L86">        this.index = index;</span>
+<span class="fc" id="L87">    }</span>
 
-    public String getPrintableIndex() {
-<span class="pc bpc" id="L83" title=
-"1 of 2 branches missed.">        return getParent() == null ? getIndex() + "." : getParent().getIndex()</span>
+    public String getPrintable() {
+<span class="fc bfc" id="L90" title=
+"All 2 branches covered.">        return (getParent() == null ? getIndex() + ". " : getParent().getIndex()</span>
 <span class="fc" id=
-"L84">                + "." + getIndex() + ".";</span>
+"L91">                + "." + getIndex() + ". ") + getName();</span>
     }
 
+    public final void print() {
+<span class="fc" id="L95">        print(0);</span>
+<span class="fc" id="L96">    }</span>
+
+    private void print(int tabs) {
+<span class="fc" id=
+"L99">        boolean exec = isExecutable(Configuration.DIR());</span>
+<span class="fc bfc" id="L100" title=
+"All 2 branches covered.">        System.out.format("[%s] %s%s\n", exec ? "X" : " ",</span>
+<span class="fc" id=
+"L101">                "\t".repeat(tabs), getPrintable());</span>
+<span class="pc bfc" id="L102" title=
+"All 2 branches covered.">        if (exec) children.forEach(child -&gt; child.print(tabs + 1));</span>
+<span class="fc" id="L103">    }</span>
+
     public ExecutionStep getParent() {
-<span class="fc" id="L88">        return parent;</span>
+<span class="fc" id="L106">        return parent;</span>
     }
 }
 </pre>
