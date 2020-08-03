@@ -14,18 +14,27 @@ public abstract class ExecutionStep {
     private int index;
     private ExecutionStep parent;
 
-    public ExecutionStep(String name) {
-        this(name, null);
+    public ExecutionStep(String name, ExecutionStep... children) {
+        this(name, List.of(children));
     }
 
     public ExecutionStep(String name, List<ExecutionStep> children) {
         this.name = name;
 
-        if (children == null) return;
-        this.children.addAll(children);
-        for (int i = 0; i < this.children.size(); i++) {
-            this.children.get(i).setParent(this, i);
+        if (children == null || children.isEmpty()) return;
+        children.forEach(this::addChild);
+    }
+
+    public final void addChild(ExecutionStep child) {
+        if(hasChild(child)) {
+            throw new IllegalArgumentException("This child has already been registered.");
         }
+        children.add(child);
+        child.setParent(this, children.size());
+    }
+
+    public final boolean hasChild(ExecutionStep step) {
+        return children.stream().anyMatch(child -> child.getClass().equals(step.getClass()));
     }
 
     public final void setParent(ExecutionStep parent, int index) {
@@ -33,10 +42,14 @@ public abstract class ExecutionStep {
             throw new IllegalStateException("The parent step has already been set.");
         }
         if (parent == null) {
-            throw new IllegalStateException("The parent parameter must not be null");
+            throw new IllegalArgumentException("The parent parameter must not be null");
         }
-        this.parent = parent;
+        if(!parent.hasChild(this)) {
+            throw new IllegalStateException("Please register a child using the parent's method.");
+        }
         setIndex(index);
+
+        this.parent = parent;
     }
 
     public abstract boolean isExecutable(File runningDirectory);
@@ -60,7 +73,8 @@ public abstract class ExecutionStep {
             throw new IllegalStateException("The index has already been set.");
         }
         if (index < 1) {
-            throw new IllegalStateException(index + " is an invalid value for an execution step.");
+            throw new IllegalArgumentException(index +
+                    " is an invalid value for an execution step.");
         }
         this.index = index;
     }
