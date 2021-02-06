@@ -23,7 +23,7 @@ jobs:
         with:
           java-version: 14
       - name: 💽 Restore Maven cache
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         with:
           path: ~/.m2/repository
           key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
